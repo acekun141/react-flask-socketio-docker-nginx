@@ -1,0 +1,56 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 30px;
+    background-color: white;
+    border-bottom: 1px solid #dbdbdb;
+    .left-side {
+        p {
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 15px 0;
+        }
+    }
+    .right-side {
+        display: flex;
+        flex-direction: row;
+        .wrap-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-left: 15px;
+            .noti {
+                position: absolute;
+                top: 10px;
+                left: 0;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #ff6b6b;
+                p {
+                    color: white;
+                    font-size: 0.8em;
+                    font-weight: bold;
+                }
+            }
+            svg {
+                stroke: black;
+                stroke-width: 1;
+                path {
+                }
+            }
+        }
+        .user-icon {
+            img {
+                height: 30px;
+                width: 30px;
+                border-radius: 50%;
+                border: 1px solid black;
+            }
+        }
+    }
+}

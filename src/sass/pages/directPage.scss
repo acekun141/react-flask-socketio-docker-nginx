@@ -1,0 +1,79 @@
+.module-directpage {
+    height: calc(100vh - 170px);
+    max-width: 989px;
+    margin: 30px auto;
+    border: 1px solid #e4e4e4;
+    border-radius: 8px;
+    display: flex;
+    background-color: white;
+    .left-side {
+        min-width: 250px;
+        border-right: 1px solid #e4e4e4;
+        overflow-x: auto;
+        .friend {
+            background-color: white;
+            padding: 5px 15px;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            width: 100%;
+            margin-bottom: 10px;
+            .friend-left {
+                margin-right: 15px;
+                .avatar {
+                    display: flex;
+                    img {
+                        height: 50px;
+                        width: 50px;
+                        border-radius: 8px;
+                    }
+                }
+            }
+            .friend-right {
+                text-align: left;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                .current {
+                    font-size: 0.9em;
+                    color: gray;
+                    font-style: italic;
+                }
+            }
+        }
+    }
+    .right-side {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        .side-header {
+            font-weight: bolder;
+            padding: 15px;
+            border-bottom: 1px solid #e4e4e4;
+            display: flex;
+            align-items: center;
+            .avatar {
+                display: flex;
+                img {
+                    height: 30px;
+                    width: 30px;
+                    border-radius: 50%;
+                }
+            }
+            p {
+                margin-left: 10px;
+            }
+        }
+        .side-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            .messages {
+                flex: 1;
+            }
+            .typing {
+                background-color: white;
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'manrope';
+    src: url('../fonts/Manrope/static/Manrope-Regular.ttf');
+}
+*, html {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    text-decoration: none;
+    font-family: 'manrope';
+    color: #050505;
+}
+
+html {
+    background-color: rgb(250, 251, 252);
+}
+
+a, p {
+    font-size: 1em;
+}
+
+button, input {
+    background-color: unset;
+    outline: none;
+    border: none;
+    appearance: none;
+}
