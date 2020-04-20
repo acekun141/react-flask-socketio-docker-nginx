@@ -1,5 +1,5 @@
 .module-directpage {
-    height: calc(100vh - 170px);
+    height: 600px;
     max-width: 989px;
     margin: 30px auto;
     border: 1px solid #e4e4e4;
@@ -9,7 +9,42 @@
     .left-side {
         min-width: 250px;
         border-right: 1px solid #e4e4e4;
-        overflow-x: auto;
+        position: relative;
+        .side-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-bottom: 1px solid #e4e4e4;
+            z-index: 2;
+            display: flex;
+            align-items: stretch;
+            height: 50px;
+            width: 100%;
+            .choose {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: 0.1s ease-in-out;
+                svg {
+                    margin-right: 10px;
+                }
+                p {}
+                &:hover {
+                    background-color: #e4e4e4;
+                }
+            }
+            .friends {
+                border-right: 1px solid #e4e4e4;
+            }
+        }
+        .wrap-list-friend {
+            position: absolute;
+            width: 100%;
+            top: 60px;
+            height: calc(100% - 60px);
+            overflow-x: auto;
+        }
         .friend {
             background-color: white;
             padding: 5px 15px;
@@ -17,7 +52,10 @@
             flex-direction: row;
             justify-content: flex-start;
             width: 100%;
-            margin-bottom: 10px;
+            transition: 0.1s ease-in-out;
+            &:hover {
+                background-color: #e4e4e4;
+            }
             .friend-left {
                 margin-right: 15px;
                 .avatar {
@@ -47,8 +85,9 @@
         display: flex;
         flex-direction: column;
         .side-header {
+            height: 50px;
+            padding: 0 15px;
             font-weight: bolder;
-            padding: 15px;
             border-bottom: 1px solid #e4e4e4;
             display: flex;
             align-items: center;
@@ -68,11 +107,145 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            position: relative;
             .messages {
-                flex: 1;
+                position: absolute;
+                padding: 15px;
+                width: calc(100% - 30px);
+                height: calc(100% - 80px);
+                top: 0;
+                left: 0;
+                overflow-x: auto;
+                .wrap-message {
+                    display: flex;
+                    align-items: center;
+                    margin-top: 10px;
+                    .message {
+                        border: 1px solid #e4e4e4;
+                        padding: 10px;
+                        border-radius: 8px;
+                        max-width: 300px;
+                        word-break: break-word;
+                    }
+                    .time {
+                        margin-left: 15px;
+                        font-size: 0.8em;
+                        color: gray;
+                        font-style: italic;
+                    }
+                    &.your-message {
+                        flex-direction: row-reverse;
+                        .message {
+                            background-color: #1a73e8;
+                            box-shadow:0 0 4px 0 #1a73e8;
+                            color: white;
+                            border: 1px solid #1a73e8;
+                        }
+                        .time {
+                            margin-left: 0;
+                            margin-right: 15px;
+                        }
+                    }
+                }
             }
             .typing {
-                background-color: white;
+                position: absolute;
+                display: flex;
+                height: 50px;
+                border-top: 1px solid #e4e4e4;
+                width: 100%;
+                bottom: 0;
+                form {
+                    width: 100%;
+                    display: flex;
+                    input {
+                        flex: 1;
+                        padding: 0 15px;
+                    }
+                    button {
+                        width: 50px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border-left: 1px solid #e4e4e4;
+                        svg {
+                            stroke: #1a73e8;
+                            stroke-width: 2;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 539px) {
+    .module-directpage {
+        .left-side {
+            width: 100%;
+            .side-header {
+                .choose {
+                    svg {
+                    }
+                    p {}
+                    &:hover {
+                    }
+                }
+                .friends {
+                }
+            }
+            .wrap-list-friend {
+            }
+            .friend {
+                &:hover {
+                }
+                .friend-left {
+                    .avatar {
+                        img {
+                        }
+                    }
+                }
+                .friend-right {
+                    .current {
+                    }
+                }
+            }
+        }
+        .right-side {
+            display:none;
+            .side-header {
+                .avatar {
+                    img {
+                    }
+                }
+                p {
+                }
+            }
+            .side-content {
+                .messages {
+                    .wrap-message {
+                        .message {
+                        }
+                        .time {
+                        }
+                        &.your-message {
+                            .message {
+                            }
+                            .time {
+                            }
+                        }
+                    }
+                }
+                .typing {
+                    form {
+                        input {
+                        }
+                        button {
+                            svg {
+                            }
+                        }
+                    }
+                }
             }
         }
     }

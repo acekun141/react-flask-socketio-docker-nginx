@@ -9,6 +9,7 @@
             display: block;
             margin: auto;
             box-sizing:border-box;
+            background-color: white;
         }
     }
     .module-content {
@@ -72,11 +73,13 @@
 .module-homepage {
     .module-header {
         padding: 0 15px;
+        margin: 30px auto;
         input {
             width: 100%;
         }
     }
     .module-content {
+        margin: 30px auto;
         .friend {
             margin: 5px 15px;
             width: calc(100% - 32px);

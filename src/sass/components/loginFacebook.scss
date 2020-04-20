@@ -1,8 +1,9 @@
 .wrap-login-button {
     margin-top: 50px;
     button {
-        background-color: white;
         border: 2px solid #1a73e8;
+        background-color: #1a73e8;
+        box-shadow: 0 0 10px 0 #1a73e8;
         display: inline-block;
         border-radius: 8px;
         display: flex;
@@ -11,12 +12,12 @@
         padding: 10px 15px 10px 10px;
         transition: 0.2s ease-in-out;
         svg {
-            stroke: #1a73e8;
+            stroke: white;
             stroke-width: 1.5;
             transition: 0.2s ease-in-out;
         }
         p {
-            color: #1a73e8;
+            color: white;
             font-weight: bold;
             font-size: 1em;
             transition: 0.2s ease-in-out;
