@@ -30,6 +30,8 @@ class User(db.Model):
     avatar = db.Column(db.Text, nullable=False)
     token_data = db.relationship('UserToken', backref='user',
                                  uselist=False)
+    favorites = db.relationship('Favorite', foreign_keys='Favorite.user_id' ,backref='user')
+    favorited = db.relationship('Favorite', foreign_keys='Favorite.favorite' ,backref='user_favorite')
 
     def __repr__(self):
         return '<User {0}-{1}>'.format(self.name, self.user_id)
@@ -76,3 +78,26 @@ class UserToken(db.Model):
             return True, self.get_dict()
         else:
             return False, 'Some thing wrong'
+
+
+class Favorite(db.Model):
+    __tablename__ = 'favorites'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    favorite = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+
+    def _repr__(self):
+        return '<Favorite {}>'.format(self.user.name)
+
+    @staticmethod
+    def create_new(user_id, favorite):
+        new_favorite = Favorite()
+        new_favorite.user_id = user_id
+        new_favorite.favorite = favorite
+        db.session.add(new_favorite)
+        db.session.commit()
+
+    @staticmethod
+    def delete_one(favorite):
+        db.session.delete(favorite)
+        db.session.commit()

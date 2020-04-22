@@ -1,4 +1,4 @@
-import {SIGN, GET_USER} from './actionTypes';
+import {SIGN, GET_USER, LOGOUT} from './actionTypes';
 
 export const sign = (data) => async (dispatch) => {
     try {
@@ -35,3 +35,9 @@ export const get_user = () => (dispatch) => {
         type: GET_USER
     });
 };
+
+export const log_out = () => (dispatch) => {
+    return dispatch({
+        type: LOGOUT
+    })
+}

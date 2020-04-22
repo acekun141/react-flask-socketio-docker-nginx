@@ -2,6 +2,8 @@ from flask import current_app, jsonify
 import requests
 import jwt
 
+APP_ID = "567500377224019"
+APP_SECRET = "b0de99d0150c7adcaf72c973f7713813"
 
 
 def get_jwt(data):

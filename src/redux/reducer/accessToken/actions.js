@@ -1,4 +1,5 @@
 import {GET_TOKEN} from './actionTypes';
+import {LOGOUT} from '../user/actionTypes';
 
 export const get_token = () => async (dispatch) => {
     try {
@@ -21,5 +22,8 @@ export const get_token = () => async (dispatch) => {
         }
     } catch(error) {
         alert('Something wrong! Sorry about that!');
+        return dispatch({
+            type: LOGOUT 
+        });
     }
 };

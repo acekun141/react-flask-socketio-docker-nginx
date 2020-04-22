@@ -1,7 +1,7 @@
 from app import db
 from flask import request, jsonify, current_app
 from app.auth import auth as bp
-from app.auth.models import User, UserToken
+from app.auth.models import User, UserToken, Favorite
 from app.auth.token import get_jwt, get_token, check_token
 from functools import wraps
 import datetime
@@ -97,3 +97,41 @@ def sign():
 def get_facebook_token(current_user):
     user_token = UserToken.query.filter_by(user_id=current_user.user_id).first()
     return jsonify({'access_token': user_token.access_token})
+
+
+@bp.route('/favorite', methods=['GET'])
+@token_required
+def get_all_favorite(current_user):
+    result = []
+    for favorite in current_user.favorites:
+        result.append(favorite.user_favorite.get_dict())
+
+    return jsonify({'favorites': result})
+
+
+@bp.route('/favorite', methods=['POST'])
+@token_required
+def add_favorite(current_user):
+    data = request.get_json()
+    user_id = data.get('userID', None)
+    if user_id:
+        user = User.query.filter_by(user_id=str(user_id)).first()
+        favorite = Favorite.query.filter_by(user_id=current_user.user_id, favorite=user_id).first()
+        if user and not favorite:
+            Favorite.create_new(current_user.user_id, user_id)
+            return jsonify({'message': 'Ok'})
+    return jsonify({'error': 'Invalid'}), 401
+
+
+@bp.route('/favorite', methods=['DELETE'])
+@token_required
+def delete_favorite(current_user):
+    data = request.get_json()
+    user_id = data.get('userID', None)
+    if user_id:
+        user = User.query.filter_by(user_id=user_id).first()
+        favorite = Favorite.query.filter_by(user_id=current_user.user_id, favorite=user_id).first()
+        if user and favorite:
+            Favorite.delete_one(favorite)
+            return jsonify({'message': 'Ok'})
+    return jsonify({'error': 'Invalid'}), 401

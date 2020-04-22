@@ -1,4 +1,4 @@
-import {SIGN, GET_USER} from './actionTypes';
+import {SIGN, GET_USER, LOGOUT} from './actionTypes';
 import {Base64} from 'js-base64';
 
 const initialState = {}
@@ -22,8 +22,12 @@ export default function(state=initialState, action) {
                 const user_data_decode = JSON.parse(Base64.decode(user_data_encode));
                 return user_data_decode;
             }catch(error) {
+                localStorage.clear();
                 return state;
             }
+        case LOGOUT:
+            localStorage.clear();
+            return initialState;
         default:
             return state;
     }
