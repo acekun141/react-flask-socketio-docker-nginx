@@ -1,17 +1,16 @@
 import React, {useState, useEffect} from 'react';
+import {sign} from '../redux/reducer/user/actions';
 import {FiFacebook} from 'react-icons/fi';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
-
+import {useDispatch, useSelector} from 'react-redux';
+import {useHistory} from 'react-router-dom';
 
 export default function Facebook() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [buttonContent, setButtonContent] = useState(null);
-    const [user, setUser] = useState({
-        userID: '',
-        name: '',
-        email: '',
-        picture: ''
-    });
+    const history = useHistory();
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.user);
     useEffect(() => {
         if (isLoggedIn) {
             setButtonContent(null);
@@ -20,8 +19,8 @@ export default function Facebook() {
                 (
                     <FacebookLogin
                         appId="567500377224019"
-                        scope="public_profile, email, user_birthday,user_friends,user_photos"
-                        fields="name,email,picture,friends,photos"
+                        scope="public_profile,email,user_friends"
+                        fields="name,email,picture"
                         onClick={componentClicked}
                         callback={responseFacebook}
                         render={renderProps => (
@@ -35,19 +34,18 @@ export default function Facebook() {
             );
         }
     }, [isLoggedIn]);
+    useEffect(() => {
+        if (user.name) {
+            history.replace('/');
+        }
+    }, [user]);
     const responseFacebook = (response) => {
         if (response.id && !isLoggedIn) {
-            setUser({
-                userID: response.id,
-                name: response.name,
-                email: response.email,
-                picture: response.picture.data.url
-            });
+            dispatch(sign(response));
             setIsLoggedIn(true);
         }
     };
-    const componentClicked = (event) => {
-    };
+    const componentClicked = (event) => {};
     return (
         <div className='wrap-login-button'>
             {buttonContent}

@@ -1,25 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation, Link} from 'react-router-dom';
 import {FiSend, FiUsers} from 'react-icons/fi';
+import {useSelector} from 'react-redux';
 
 
 export default function Header() {
-    const imageAddress = 'https://scontent.fhan5-1.fna.fbcdn.net/v/t1.0-9/69805046_991917030979058_4702335928889245696_n.jpg?_nc_cat=109&_nc_sid=09cbfe&_nc_ohc=TV3v6mvje3gAX-fkwtm&_nc_ht=scontent.fhan5-1.fna&oh=190e3139117785c37efcf1be98023ba7&oe=5EC02CD8'
     const location = useLocation();
+    const user = useSelector(state => state.user);
     const [show, setShow] = useState(false);
     useEffect(() => {
-        if (location.pathname === '/login') {
-            setShow(false);
-        } else {
+        if (location.pathname !== '/login' && user.name && user.avatar) {
             setShow(true);
+        } else {
+            setShow(false);
         }
-    }, []);
+    }, [location, user]);
     const result = show
         ? (
             <div className='header'>
                 <div className='left-side'>
                     <p className='page-title'>
-                        Unnamed
+                        WHO
                     </p>
                 </div>
                 <div className='right-side'>
@@ -37,7 +38,7 @@ export default function Header() {
                         </Link>
                     </div>
                     <div className='user-icon wrap-icon'>
-                        <img src={imageAddress} />
+                        <img src={user.avatar} />
                     </div>
                 </div>
             </div>

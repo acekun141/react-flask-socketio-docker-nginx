@@ -1,59 +1,108 @@
-import React from 'react';
-import {FiSettings, FiMessageCircle} from 'react-icons/fi';
+import React, {useEffect, useState} from 'react';
+import {get_facebook_friend} from '../actions/homePage';
+import {useSelector} from 'react-redux';
+import {
+    FiSettings, FiMessageCircle,
+    FiHeart, FiFacebook,
+    FiUserMinus, FiUserPlus
+} from 'react-icons/fi';
 
 export default function HomePage() {
     return (
         <div className='module-homepage'>
             <div className='module-header'>
-                <input type='text' placeholder='Find your friend' />
+                <button className='favorite'>
+                    <FiHeart size={20}/>
+                    <p>Favorite</p>
+                </button>
+                <button className='facebook active'>
+                    <FiFacebook size={20}/>
+                    <p>Facebook</p>
+                </button>
             </div>
             <div className='module-content'>
-                <div className='friend'>
-                    <div className='friend-avatar'>
-                        <Avatar />
-                    </div>
-                    <div className='friend-name'>
-                        <p>Le Viet Hung</p>
-                        <button className='message'>
-                            <FiMessageCircle size={20} />
-                            <p>Ping</p>
-                        </button>
-                    </div>
+                <Facebook />
+            </div>
+        </div>
+    );
+};
+
+export const Favorites = () => {
+    const user = useSelector(state => state.user);
+    return (
+        <div className='favorites'>
+            <div className='favorites-header'>
+                <input type='text' placeholder='Find your friend' />
+            </div>
+            <div className='friend'>
+                <div className='friend-avatar'>
+                    <Avatar avatar={user.avatar}/>
                 </div>
-                <div className='friend'>
-                    <div className='friend-avatar'>
-                        <Avatar />
-                    </div>
-                    <div className='friend-name'>
-                        <p>Le Viet Hung</p>
+                <div className='friend-name'>
+                    <p>Le Viet Hung</p>
+                    <div className='group-button'>
                         <button className='message'>
                             <FiMessageCircle size={20} />
-                            <p>Ping</p>
+                            <p>Message</p>
                         </button>
-                    </div>
-                </div>
-                <div className='friend'>
-                    <div className='friend-avatar'>
-                        <Avatar />
-                    </div>
-                    <div className='friend-name'>
-                        <p>Le Viet Hung</p>
-                        <button className='message'>
-                            <FiMessageCircle size={20} />
-                            <p>Ping</p>
+                        <button className='unfavorite'>
+                            <FiUserMinus size={20} />
+                            <p>Unfavorite</p>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     );
-};
+}
 
-export const Avatar = () => {
-    const link = 'https://scontent.fhan5-1.fna.fbcdn.net/v/t1.0-9/69805046_991917030979058_4702335928889245696_n.jpg?_nc_cat=109&_nc_sid=09cbfe&_nc_ohc=TV3v6mvje3gAX-fkwtm&_nc_ht=scontent.fhan5-1.fna&oh=190e3139117785c37efcf1be98023ba7&oe=5EC02CD8';
+export const Facebook = () => {
+    const token = useSelector(state => state.token);
+    const [friends, setFriends] = useState([]); 
+    const [next, setNext] = useState('');
+    useEffect(() => {
+        const async_function = async () => {
+            const data = await get_facebook_friend(token);
+            setFriends(data.friends.data);
+            setNext(data.friends.paging.cursors.after);
+        }
+        if (token) {
+            async_function();
+        }
+    }, [token])
+    return (
+        <div className='facebook'>
+            {friends.map((friend) => (
+                <div key={friend.id} className='friend'>
+                    <div className='friend-avatar'>
+                        <Avatar url={friend.picture.data.url}/>
+                    </div>
+                    <div className='friend-name'>
+                        <p>{friend.name}</p>
+                        <div className='group-button'>
+                            <button className='message'>
+                                <FiMessageCircle size={20} />
+                                <p>Message</p>
+                            </button>
+                            <button className='favorite'>
+                                <FiUserPlus size={20} />
+                                <p>Favorite</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            ))}
+            <div className='facebook-footer'>
+                <button className='more'>More</button>
+            </div>
+        </div>
+    );
+}
+
+export const Avatar = (props) => {
     return (
         <div className='avatar'>
-            <img src={link} />
+            <img src={props.url} />
         </div>
     );
 };

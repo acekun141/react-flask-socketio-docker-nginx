@@ -1,9 +1,13 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import DirectPage from './pages/DirectPage';
+import PrivateRotue from './components/PrivateRoute';
+import {useDispatch, useSelector} from 'react-redux';
+import {get_user} from './redux/reducer/user/actions';
+import {get_token} from './redux/reducer/accessToken/actions';
 import {
     BrowserRouter as Router,
     Route,
@@ -12,17 +16,27 @@ import {
 
 
 function App() {
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.user);
+    useEffect(() => {
+        dispatch(get_user());
+    }, []);
+    useEffect(() => {
+        if (user.name) {
+            dispatch(get_token());
+        }
+    }, [user])
     return (
         <Router>
         <div className="App">
             <Header />
             <Switch>
-                <Route exact path='/'>
+                <PrivateRotue exact path='/'>
                     <HomePage />
-                </Route>
-                <Route exact path='/direct'>
+                </PrivateRotue>
+                <PrivateRotue exact path='/direct'>
                     <DirectPage />
-                </Route>
+                </PrivateRotue>
                 <Route path='/login'>
                     <LoginPage />
                 </Route>
