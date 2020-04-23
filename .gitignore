@@ -20,6 +20,7 @@
 
 **/env
 **.db
+**.pyc
 **/migrations
 
 npm-debug.log*

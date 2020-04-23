@@ -32,6 +32,8 @@ class User(db.Model):
                                  uselist=False)
     favorites = db.relationship('Favorite', foreign_keys='Favorite.user_id' ,backref='user')
     favorited = db.relationship('Favorite', foreign_keys='Favorite.favorite' ,backref='user_favorite')
+    known_rooms = db.relationship('Room', foreign_keys='Room.user_id', backref='known_user')
+    unknown_rooms = db.relationship('Room', foreign_keys='Room.private_user', backref='unknown_user')
 
     def __repr__(self):
         return '<User {0}-{1}>'.format(self.name, self.user_id)
