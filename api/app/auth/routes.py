@@ -17,7 +17,8 @@ def token_required(f):
                 payload = jwt.decode(token, current_app.config['SECRET_KEY'])
                 user = User.query.filter_by(user_id=payload['userID']).first()
                 return f(current_user=user, *args, **kwargs)
-            except :
+            except Exception as val:
+                print(val)
                 return jsonify({'error': 'Invalid token'}), 401
         else:
             return jsonify({'error': 'Invalid'}), 401
