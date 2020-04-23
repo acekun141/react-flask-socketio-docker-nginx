@@ -29,3 +29,28 @@ export const get_next_friend = async (url) => {
         return null;
     }
 }
+
+export const get_room = async (user_id) => {
+    try {
+        const response = await fetch('/chat/room',
+            {
+                method: 'POST',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': localStorage.getItem('token')
+                },
+                body: JSON.stringify({user_id})
+            }
+        );
+        const data = await response.json();
+        if (data.room && data.user_id && data.private_user) {
+            return data;
+        } else {
+            return false;
+        }
+    } catch(error) {
+        alert('Cannot login! Try later');
+        return false;
+    }
+}

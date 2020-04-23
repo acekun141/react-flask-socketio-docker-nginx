@@ -2,11 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_socketio import SocketIO
+from flask_cors import CORS
 from config import Config
 
 db = SQLAlchemy()
 migrate = Migrate()
-socketio = SocketIO()
+socketio = SocketIO(cors_allowed_origins="*")
 
 
 def create_app(debug=False):
@@ -23,5 +24,9 @@ def create_app(debug=False):
 
     from app.chat import chat as chat_blueprint
     app.register_blueprint(chat_blueprint)
+
+    @app.teardown_appcontext
+    def shutdow_session(exception=None):
+        db.session.remove()
 
     return app

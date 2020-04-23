@@ -34,11 +34,14 @@ function App() {
                 <PrivateRotue exact path='/'>
                     <HomePage />
                 </PrivateRotue>
-                <PrivateRotue exact path='/direct'>
+                <PrivateRotue path='/direct/:room_id?'>
                     <DirectPage />
                 </PrivateRotue>
                 <Route path='/login'>
                     <LoginPage />
+                </Route>
+                <Route path="*">
+                    <h1>Error</h1>
                 </Route>
             </Switch>
             <Footer />

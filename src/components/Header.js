@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation, Link} from 'react-router-dom';
-import {FiSend, FiUsers, FiLogOut, FiAlignJustify, FiAlignCenter} from 'react-icons/fi';
+import {FiSend, FiUsers, FiLogOut, FiAlignJustify} from 'react-icons/fi';
 import {useSelector, useDispatch} from 'react-redux';
 import {log_out} from '../redux/reducer/user/actions';
+import io from 'socket.io-client';
 
+export const socket = io.connect('http://localhost:5000');
 
 export default function Header() {
     const dispatch = useDispatch();
@@ -52,7 +54,7 @@ export default function Header() {
                         </Link>
                     </div>
                     <div className='wrap-icon'>
-                        <Link to='direct'>
+                        <Link to='/direct'>
                             {/* <div className='noti'>
                                 <p>3</p>
                             </div> */}

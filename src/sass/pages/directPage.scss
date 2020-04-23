@@ -34,6 +34,22 @@
             }
             .friends {
                 border-right: 1px solid #e4e4e4;
+                &.active {
+                    background-color: #e4e4e4;
+                    svg {
+                        fill: #26b926;
+                        stroke: #26b926;
+                    }
+                }
+            }
+            .unknown {
+                &.active {
+                    background-color: #e4e4e4;
+                    svg {
+                        fill: #e75252;
+                        stroke: #e75252;
+                    }
+                }
             }
         }
         .wrap-list-friend {
@@ -49,6 +65,7 @@
             display: flex;
             flex-direction: row;
             justify-content: flex-start;
+            align-items: stretch;
             width: 100%;
             transition: 0.1s ease-in-out;
             &:hover {
@@ -68,13 +85,8 @@
             .friend-right {
                 text-align: left;
                 display: flex;
-                flex-direction: column;
                 justify-content: center;
-                .current {
-                    font-size: 0.9em;
-                    color: gray;
-                    font-style: italic;
-                }
+                align-items: center;
             }
         }
     }

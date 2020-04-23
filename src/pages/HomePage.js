@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {get_facebook_friend, get_next_friend} from '../actions/homePage';
+import {get_facebook_friend, get_next_friend, get_room} from '../actions/homePage';
 import {
     get_favorites,
     add_favorite,
