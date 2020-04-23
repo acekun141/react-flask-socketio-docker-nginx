@@ -1,13 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 import LeftSide from '../components/LeftSide';
 import RightSide from '../components/RightSide';
 
 
 export default function DirectPage() {
+    const [roomInfo, setRoomInfo] = useState({});
     return (
         <div className='module-directpage'>
-            <LeftSide />
-            <RightSide />
+            <LeftSide setRoomInfo={setRoomInfo} />
+            <RightSide roomInfo={roomInfo} />
         </div>
     );
 };

@@ -3,12 +3,14 @@ import {FiUserCheck, FiUserX} from 'react-icons/fi';
 import {Avatar} from '../pages/HomePage';
 import {socket} from './Header';
 import defaultAvatar from '../images/avatar.svg';
+import {useHistory} from 'react-router-dom';
 
 
-export default function() {
+export default function(props) {
     const [knownRooms, setKnownRooms] = useState([]);
     const [unknownRooms, setUnknownRooms] = useState([]);
     const [show, setShow] = useState(1);
+    const history = useHistory();
     useEffect(() => {
         socket.emit('get', {'token': localStorage.getItem('token')})
         socket.on('handle_room', data => {
@@ -37,6 +39,10 @@ export default function() {
         known.classList.remove('active');
         unknown.classList.add('active');
     };
+    const enterRoom = (room_data) => {
+        props.setRoomInfo(room_data);
+        history.push(`/direct/${room_data.room_id}`);
+    }
     return (
         <div className='left-side'>
             <div className='side-header'>
@@ -54,11 +60,11 @@ export default function() {
                 </button>
             </div>
             {show === 1
-                ? <KnownRooms data={knownRooms} />
+                ? <KnownRooms data={knownRooms} enter={enterRoom} />
                 : null
             }
             {show === 2
-                ? <UnknownRooms data={unknownRooms} />
+                ? <UnknownRooms data={unknownRooms} enter={enterRoom} />
                 : null
             }
         </div>
@@ -69,7 +75,9 @@ const UnknownRooms = (props) => {
     return (
         props.data.map(room_data => (
             <div key={room_data.room_id} className='wrap-list-friend'>
-                <button className='friend'>
+                <button className='friend'
+                        onClick={() => props.enter(room_data)}
+                >
                     <div className='friend-left'>
                         <Avatar url={defaultAvatar} />
                     </div>
@@ -86,7 +94,9 @@ const KnownRooms = (props) => {
     return (
         props.data.map(room_data => (
             <div key={room_data.room_id} className='wrap-list-friend'>
-                <button className='friend'>
+                <button className='friend'
+                        onClick={() => props.enter(room_data)}
+                >
                     <div className='friend-left'>
                         <Avatar url={room_data.user.avatar} />
                     </div>

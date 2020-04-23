@@ -3,6 +3,7 @@ from app import socketio, db
 from flask_socketio import emit, join_room, leave_room
 from functools import wraps
 from app.auth.models import User
+from app.chat.models import Room, Message
 import jwt
 
 def check_token(data):
@@ -32,3 +33,22 @@ def get_known_room(data):
         emit('handle_room', {'known_rooms': known_rooms, 'unknown_rooms': unknown_rooms}, broadcasts=True)
     else:
         return jsonify({'error': 'Invalid'}), 400
+    
+@socketio.on('receive_message')
+def receive_message(data):
+    current_user = check_token(data)
+    if current_user:
+        message = data.get('message')
+        room_id = data.get('room_id')
+        if message and room_id:
+            room = (Room.query.filter_by(
+                        id=room_id, user_id=current_user.user_id).first()
+                    or Room.query.filter_by(
+                        id=room_id, private_user=current_user.user_id).first()
+                    )
+            if room:
+                new_message = Message.create_new(current_user, room, message)
+                emit('send_message', {'message': new_message.message,
+                                      'user_id': current_user.user_id,
+                                      'date': new_message.date.strftime("%a, %d %b %Y %H:%M:%S GMT"),
+                                      'id': new_message.id}, broadcast=True)

@@ -60,15 +60,20 @@ class Message(db.Model):
         return result
     
     @staticmethod
-    def create_new(user, to_user, room, message):
+    def create_new(user, room, message):
         if len(message) > 500:
             message = message[:500]
         new_message = Message()
         new_message.user_id = user.user_id
-        new_message.to_user_id = to_user.user_id
+        if (room.user_id != user.user_id):
+            new_message.to_user_id = room.user_id
+        else:
+            new_message.to_user_id = room.private_user
         new_message.message = message
         new_message.room = room
         new_message.date = datetime.datetime.now()
         room.date = new_message.date
         db.session.add(new_message)
         db.session.commit()
+
+        return new_message

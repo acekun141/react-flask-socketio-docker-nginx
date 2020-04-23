@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useHistory} from 'react-router-dom';
 import {get_facebook_friend, get_next_friend, get_room} from '../actions/homePage';
 import {
     get_favorites,
@@ -16,8 +17,17 @@ import {
 
 export default function HomePage() {
     const [show, setShow] = useState('favorites');
+    const history = useHistory();
     const handleClick = (name) => {
         setShow(name);
+    }
+    const enterRoom = async (user_id) => {
+        const room = await get_room(user_id);
+        if (room) {
+            history.push(`/direct/${room.room}`);
+        } else {
+            alert('Room don\'t exists');
+        }
     }
     return (
         <div className='module-homepage'>
@@ -37,11 +47,11 @@ export default function HomePage() {
             </div>
             <div className='module-content'>
                 {show === 'favorites'
-                    ? <Favorites /> 
+                    ? <Favorites message={enterRoom} /> 
                     : null
                 }
                 {show === 'facebook'
-                    ? <Facebook /> 
+                    ? <Facebook message={enterRoom} /> 
                     : null
                 }
             </div>
@@ -49,7 +59,7 @@ export default function HomePage() {
     );
 };
 
-export const Favorites = () => {
+export const Favorites = (props) => {
     const favorites = useSelector(state => state.favorites)
     const dispatch = useDispatch();
     const [isFetch, setIsFetch] = useState(false);
@@ -92,7 +102,9 @@ export const Favorites = () => {
                     <div className='friend-name'>
                         <p>{favorite.name}</p>
                         <div className='group-button'>
-                            <button className='message'>
+                            <button className='message'
+                                    onClick={() => props.message(favorite.userID)}
+                            >
                                 <FiMessageCircle size={20} />
                                 <p>Message</p>
                             </button>
@@ -110,7 +122,7 @@ export const Favorites = () => {
     );
 }
 
-export const Facebook = () => {
+export const Facebook = (props) => {
     const token = useSelector(state => state.token);
     const dispatch = useDispatch();
     const [friends, setFriends] = useState([]); 
@@ -183,7 +195,9 @@ export const Facebook = () => {
                     <div className='friend-name'>
                         <p>{friend.name}</p>
                         <div className='group-button'>
-                            <button className='message'>
+                            <button className='message'
+                                    onClick={() => props.message(friend.id)}
+                            >
                                 <FiMessageCircle size={20} />
                                 <p>Message</p>
                             </button>

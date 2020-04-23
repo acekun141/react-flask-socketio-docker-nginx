@@ -36,13 +36,11 @@ def get_room(current_user):
 def send_message(current_user):
     data = request.get_json()
     message = data.get('message')
-    user_id = data.get('user_id')
     room_id = data.get('room_id')
     if message and user_id:
         user = User.query.filter_by(user_id=user_id).first()
         room = (Room.query.filter_by(
-                    id=room_id, user_id=current_user.user_id,
-                    private_user=user_id).first()
+                    id=room_id, user_id=current_user.user_id).first()
                 or Room.query.filter_by(
                     id=room_id, user_id=user_id,
                     private_user=current_user.user_id)
@@ -56,18 +54,22 @@ def send_message(current_user):
 @bp.route('/message', methods=['GET'])
 @token_required
 def get_messages(current_user):
-    data = request.get_json()
-    room_id = data.get('room_id')
-    page = data.get('page')
-    if room_id and page:
+    room_id = request.headers.get('room_id')
+    page = request.headers.get('page')
+    if room_id:
         room = (Room.query.filter_by(user_id=current_user.user_id,id=room_id).first()
                 or Room.query.filter_by(private_user=current_user.user_id,id=room_id).first())
         if room:
             try: 
-                messages = Message.query.order_by(
-                    sqlalchemy.desc(Message.date)).paginate(page=page, per_page=10)
-            except:
-                return jsonify({'messages': []})
+                messages = Message.query.filter_by(room=room).order_by(
+                    sqlalchemy.desc(Message.date)).paginate(page=int(page), per_page=10)
+            except Exception as value:
+                messages = Message.query.filter_by(room=room).order_by(
+                    sqlalchemy.desc(Message.date)).paginate(page=1, per_page=10)
+                result = []
+                for message in messages.items:
+                    result.append(message.get_dict())
+                return jsonify({'messages': result})
             if messages.has_next:
                 result = []
                 for message in messages.items:
