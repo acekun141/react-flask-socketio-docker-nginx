@@ -18,4 +18,7 @@ def create_app(debug=False):
     from app.auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
+    from app.chat import chat as chat_blueprint
+    app.register_blueprint(chat_blueprint)
+
     return app
