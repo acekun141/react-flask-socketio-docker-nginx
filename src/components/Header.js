@@ -47,21 +47,8 @@ export default function Header() {
                     </p>
                 </div>
                 <div className='right-side'>
-                    <div className='wrap-icon'>
-                        <Link to='/'>
-                            <FiUsers size={30} />
-                            <p>Friends</p>
-                        </Link>
-                    </div>
-                    <div className='wrap-icon'>
-                        <Link to='/direct'>
-                            {/* <div className='noti'>
-                                <p>3</p>
-                            </div> */}
-                            <FiSend size={30} />
-                            <p>Message</p>
-                        </Link>
-                    </div>
+                    <FriendIcon />
+                    <DirectIcon />
                     <div className='user-icon wrap-icon'
                          onClick={() => {
                              setIsShowOption(!isShowOption)
@@ -79,7 +66,7 @@ export default function Header() {
                                     <button className='option'
                                             onClick={() => handleLogout()}
                                     >
-                                        <FiLogOut size={30} />
+                                        <FiLogOut size={20} />
                                         <p>Log out</p>
                                     </button>
                                 </div>
@@ -93,5 +80,49 @@ export default function Header() {
         : null;
     return (
         result
+    );
+};
+
+const FriendIcon = () => {
+    const location = useLocation();
+    useEffect(() => {
+        const icon = document.getElementById('friend-header-icon');
+        if (location.pathname === '/') {
+            icon.classList.add('active');
+        } else {
+            icon.classList.remove('active');
+        }
+    }, [location])
+    return (
+        <div className='wrap-icon' id='friend-header-icon'>
+            <Link to='/'>
+                <FiUsers size={25} />
+                <p>Friends</p>
+            </Link>
+        </div>
+    );
+};
+
+
+const DirectIcon = () => {
+    const location = useLocation();
+    useEffect(() => {
+        const icon = document.getElementById('direct-header-icon');
+        if (location.pathname.includes('direct')) {
+            icon.classList.add('active');
+        } else {
+            icon.classList.remove('active');
+        }
+    }, [location])
+    return (
+        <div className='wrap-icon' id='direct-header-icon'>
+            <Link to='/direct'>
+                {/* <div className='noti'>
+                    <p>3</p>
+                </div> */}
+                <FiSend size={25} />
+                <p>Message</p>
+            </Link>
+        </div>
     );
 };

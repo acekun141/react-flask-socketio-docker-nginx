@@ -60,8 +60,8 @@
         .user-icon {
             position: relative;
             img {
-                height: 30px;
-                width: 30px;
+                height: 25px;
+                width: 25px;
                 border-radius: 50%;
                 border: 1px solid black;
             }
@@ -117,7 +117,7 @@
     }
 }
 
-@media only screen and (max-width: 375px) {
+@media only screen and (max-width: 539px) {
     .header {
         .control-header {
             display: block;

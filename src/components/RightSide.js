@@ -5,7 +5,7 @@ import {useParams} from 'react-router-dom';
 import {FiMessageSquare} from 'react-icons/fi';
 import {useHistory} from 'react-router-dom';
 import {useSelector} from 'react-redux';
-import defaultAvatar from '../images/avatar.svg';
+import defaultAvatar from '../images/avatar.png';
 import {socket} from './Header';
 
 export default function(props) {
@@ -15,7 +15,6 @@ export default function(props) {
     const history = useHistory();
     const get_message = async (room_id, next) => {
         try {
-            console.log(room_id, next);
             const response = await fetch('/chat/message', {
                 method: 'GET',
                 headers: {
@@ -42,8 +41,7 @@ export default function(props) {
     };
     useEffect(() => {
         if (room_id) {
-            setNext(1);
-            get_message(room_id, next);
+            get_message(room_id, 1);
         }
     }, [room_id]);
     return (
@@ -54,7 +52,7 @@ export default function(props) {
             <MessageBox messages={messages} room_id={room_id} />
         </div>
         :
-        <div className='none-direct'>
+        <div className='right-side none-direct'>
             <FiMessageSquare size={60} />
             <p>Select your room</p>
         </div>
@@ -65,9 +63,9 @@ export default function(props) {
 const MessageBox = (props) => {
     const [messages, setMessages] = useState([]);
     const user = useSelector(state => state.user);
+    const msgs = document.getElementById('messages');
     useEffect(() => {
         socket.on('send_message', (data) => {
-            console.log(data.date);
             let date = new Date(data.date);
             setMessages([...messages, {
                 user_id: data.user_id,
@@ -76,10 +74,13 @@ const MessageBox = (props) => {
                 date: `${date.getUTCHours()}:${date.getUTCMinutes()}`
             }]);
         });
+        if (msgs) {
+            setTimeout(() => {msgs.scrollTop = msgs.scrollHeight}, 1);
+        }
         return () => {
             socket.off('send_mesasge');
         }
-    }, [messages])
+    }, [messages, msgs])
     useEffect(() => {
         if (props.messages) {
             setMessages(props.messages.map(message => {
@@ -90,17 +91,22 @@ const MessageBox = (props) => {
                         date: `${date.getUTCHours()}:${date.getUTCMinutes()}`
                     }
             }));
+            if (msgs) {
+                setTimeout(() => {msgs.scrollTop = msgs.scrollHeight}, 1);
+            }
         }
-    }, [props.messages])
+    }, [props.messages, msgs])
     return (
         <div className='side-content'>
-            <div className='messages'>
-                {messages.sort((a, b) => a.id - b.id).map(message => (
-                    <div key={message.id} className={`wrap-message ${user.userID === message.user_id ? 'your-message' : ''}`}>
-                        <p className='message'>{message.message}</p>
-                        <p className='time'>{message.date}</p>
-                    </div>
-                ))}
+            <div className='messages' id='messages'>
+                {messages.sort((a, b) => a.id - b.id).map(message => {
+                    return (
+                        <div key={message.id} className={`wrap-message ${user.userID === message.user_id ? 'your-message' : ''}`}>
+                            <p className='message'>{message.message}</p>
+                            <p className='time'>{message.date}</p>
+                        </div>
+                    )
+                })}
             </div>
             <SendMessage room_id={props.room_id} />
         </div>

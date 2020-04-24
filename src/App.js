@@ -20,7 +20,6 @@ function App() {
     const user = useSelector(state => state.user);
     useEffect(() => {
         dispatch(get_user());
-        window.scrollTo(0, document.body.scrollHeight);
     }, []);
     useEffect(() => {
         if (user.name) {

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FiUserCheck, FiUserX} from 'react-icons/fi';
 import {Avatar} from '../pages/HomePage';
 import {socket} from './Header';
-import defaultAvatar from '../images/avatar.svg';
+import defaultAvatar from '../images/avatar.png';
 import {useHistory} from 'react-router-dom';
 
 
