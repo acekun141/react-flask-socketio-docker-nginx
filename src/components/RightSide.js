@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {FiSend} from 'react-icons/fi'
+import {FiSend, FiChevronLeft} from 'react-icons/fi'
 import {Avatar} from '../pages/HomePage';
-import {useParams} from 'react-router-dom';
+import {useParams, Link} from 'react-router-dom';
 import {FiMessageSquare} from 'react-icons/fi';
 import {useHistory} from 'react-router-dom';
 import {useSelector} from 'react-redux';
@@ -10,7 +10,7 @@ import {socket} from './Header';
 
 export default function(props) {
     const {room_id} = useParams();
-    const [next, setNext] = useState(1);
+    const [next, setNext] = useState(false);
     const [messages, setMessages] = useState([]);
     const history = useHistory();
     const get_message = async (room_id, next) => {
@@ -33,21 +33,26 @@ export default function(props) {
                     setNext(false);
                 }
             } else {
-                throw('Error');
+                throw(new Error('error'));
             }
         } catch(error) {
             history.replace('/direct');
         }
     };
+    const get_next_message = () => {
+        get_message(room_id, next);
+    }
     useEffect(() => {
         if (room_id) {
             get_message(room_id, 1);
+        } else {
+            setMessages([]);
         }
     }, [room_id]);
     return (
         room_id
         ? 
-        <div className='right-side'>
+        <div className='right-side show'>
             <RoomInfo roomInfo={props.roomInfo}/>
             <MessageBox messages={messages} room_id={room_id} />
         </div>
@@ -153,6 +158,9 @@ const RoomInfo = (props) => {
     return (
         roomInfo.user ?
         <div className='side-header'>
+            <Link to='/direct'>
+                <FiChevronLeft size={32} className='back' />
+            </Link>
             <Avatar url={roomInfo.user.avatar ? roomInfo.user.avatar : defaultAvatar} />
             <p className='title'>
                 {roomInfo.user.name}

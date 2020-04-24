@@ -4,19 +4,22 @@ import {Avatar} from '../pages/HomePage';
 import {socket} from './Header';
 import defaultAvatar from '../images/avatar.png';
 import {useHistory} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
+import {get_room} from '../actions/directPage';
 
 
 export default function(props) {
     const [knownRooms, setKnownRooms] = useState([]);
     const [unknownRooms, setUnknownRooms] = useState([]);
     const [show, setShow] = useState(1);
+    const {room_id} = useParams();
     const history = useHistory();
     useEffect(() => {
         socket.emit('get', {'token': localStorage.getItem('token')})
         socket.on('handle_room', data => {
             if (data.known_rooms && data.unknown_rooms) {
-                setKnownRooms(data.known_rooms);
-                setUnknownRooms(data.unknown_rooms);
+                setKnownRooms([...data.known_rooms]);
+                setUnknownRooms([...data.unknown_rooms]);
             } else {
                 alert('Something wrong! Try later');
             }
@@ -25,6 +28,17 @@ export default function(props) {
             socket.off('handle_room');
         } 
     }, []);
+    useEffect(() => {
+        const async_function = async () => {
+            const data = await get_room(room_id);
+            if (data, data.room_id, data.user) {
+                props.setRoomInfo(data);
+            }
+        }
+        if (room_id) {
+            async_function();
+        }
+    }, [room_id]);
     const showKnown = () => {
         const known = document.getElementById('known');
         const unknown = document.getElementById('unknown');
@@ -40,6 +54,7 @@ export default function(props) {
         unknown.classList.add('active');
     };
     const enterRoom = (room_data) => {
+        console.log(room_data);
         props.setRoomInfo(room_data);
         history.push(`/direct/${room_data.room_id}`);
     }
@@ -73,9 +88,9 @@ export default function(props) {
 
 const UnknownRooms = (props) => {
     return (
-        props.data.map(room_data => (
-            <div key={room_data.room_id} className='wrap-list-friend'>
-                <button className='friend'
+        <div className='wrap-list-friend'>
+            {props.data.map(room_data => (
+                <button key={room_data.room_id} className='friend'
                         onClick={() => props.enter(room_data)}
                 >
                     <div className='friend-left'>
@@ -85,16 +100,16 @@ const UnknownRooms = (props) => {
                         <p className='name'>{room_data.user.name}</p>
                     </div>
                 </button>
-            </div>
-        ))
+            ))}
+        </div>
     );
 }
 
 const KnownRooms = (props) => {
     return (
-        props.data.map(room_data => (
-            <div key={room_data.room_id} className='wrap-list-friend'>
-                <button className='friend'
+        <div className='wrap-list-friend'>
+            {props.data.map(room_data => (
+                <button key={room_data.room_id} className='friend'
                         onClick={() => props.enter(room_data)}
                 >
                     <div className='friend-left'>
@@ -104,7 +119,7 @@ const KnownRooms = (props) => {
                         <p className='name'>{room_data.user.name}</p>
                     </div>
                 </button>
-            </div>
-        ))
+            ))}
+        </div>
     );
 }

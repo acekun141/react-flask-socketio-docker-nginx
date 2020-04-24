@@ -117,6 +117,17 @@
     }
 }
 
+@media only screen and (min-width: 540px) and (max-width: 650px) {
+    .header {
+        padding: 0 15px;
+        .left-side {
+            p {
+                padding: 5px 0;
+            }
+        }
+    }
+}
+
 @media only screen and (max-width: 539px) {
     .header {
         .control-header {

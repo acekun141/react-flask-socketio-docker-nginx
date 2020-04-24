@@ -4,10 +4,13 @@
     margin: 0 auto;
     display: flex;
     background-color: white;
+    z-index: 1;
+    position: relative;
     .left-side {
-        min-width: 300px;
+        width: 300px;
         border-right: 1px solid #e4e4e4;
         position: relative;
+        z-index: 2;
         .side-header {
             position: absolute;
             top: 0;
@@ -62,44 +65,44 @@
             overflow-x: auto;
             padding: 5px;
             box-sizing: border-box;
-        }
-        .friend {
-            background-color: rgba($color: #000000, $alpha: 0.05);
-            padding: 5px 15px;
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
-            align-items: stretch;
-            width: 100%;
-            transition: 0.1s ease-in-out;
-            box-sizing: border-box;
-            border-radius: 8px;
-            &:hover {
-                background-color: #e4e4e4;
-            }
-            &.active {
-                background-color: #e4e4e4;
-            }
-            .friend-left {
-                margin-right: 15px;
-                .avatar {
-                    display: flex;
-                    img {
-                        height: 50px;
-                        width: 50px;
-                        border-radius: 50%;
-                        border: 1px solid rgba($color: #000000, $alpha: 0.05);
+            .friend {
+                padding: 5px 15px;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: stretch;
+                width: 100%;
+                transition: 0.1s ease-in-out;
+                box-sizing: border-box;
+                border-radius: 8px;
+                margin-bottom: 5px;
+                &:hover {
+                    background-color: #e4e4e4;
+                }
+                &.active {
+                    background-color: #e4e4e4;
+                }
+                .friend-left {
+                    margin-right: 15px;
+                    .avatar {
+                        display: flex;
+                        img {
+                            height: 50px;
+                            width: 50px;
+                            border-radius: 50%;
+                            border: 1px solid rgba($color: #000000, $alpha: 0.05);
+                        }
                     }
                 }
-            }
-            .friend-right {
-                text-align: left;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 1.2em;
-                box-sizing: border-box;
-                word-break: break-all;
+                .friend-right {
+                    text-align: left;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 1.2em;
+                    box-sizing: border-box;
+                    word-break: break-all;
+                }
             }
         }
     }
@@ -107,6 +110,11 @@
         flex: 1;
         display: flex;
         flex-direction: column;
+        z-index: 1;
+        background-color: white;
+        &.show {
+            z-index: 2;
+        }
         .side-header {
             height: 50px;
             padding: 0 15px;
@@ -114,6 +122,9 @@
             border-bottom: 1px solid #e4e4e4;
             display: flex;
             align-items: center;
+            .back {
+                display: none;
+            }
             .avatar {
                 display: flex;
                 img {
@@ -134,9 +145,9 @@
             position: relative;
             .messages {
                 position: absolute;
-                padding: 15px;
+                padding: 15px 15px 50px 15px;
                 width: 100%;
-                height: calc(100% - 50px);
+                height: 100%;
                 top: 0;
                 left: 0;
                 overflow-x: auto;
@@ -181,14 +192,16 @@
                 width: 100%;
                 bottom: 0;
                 box-sizing: border-box;
-                padding: 0 15px 5px 15px;
+                padding: 5px 15px 5px 15px;
+                backdrop-filter: blur(18px);
+                background-color: rgba(white, 0.7);
                 form {
                     width: 100%;
                     display: flex;
                     input {
                         flex: 1;
                         padding: 0 15px;
-                        background-color: #f0f2f5;
+                        background-color: rgba(black, 0.05);
                         border-radius: 20px;
                     }
                     button {
@@ -224,11 +237,12 @@
     }
 }
 
-@media only screen and (max-width: 539px) {
+@media only screen and (max-width: 650px) {
     .module-directpage {
         height: calc(100vh - 39px);
         .left-side {
             width: 100%;
+            z-index: 1;
             .side-header {
                 .choose {
                     svg {
@@ -258,13 +272,25 @@
             }
         }
         .right-side {
-            display:none;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
             .side-header {
+                justify-content: center;
+                .back {
+                    display: block;
+                    order: 1;
+                }
                 .avatar {
+                    order: 3;
                     img {
                     }
                 }
                 p {
+                    order: 2;
+                    margin: 0 10px;
                 }
             }
             .side-content {
@@ -293,6 +319,9 @@
                     }
                 }
             }
+        }
+        .none-direct {
+            display: none;
         }
     }
 }
