@@ -3,9 +3,6 @@ import {useLocation, Link} from 'react-router-dom';
 import {FiSend, FiUsers, FiLogOut, FiAlignJustify} from 'react-icons/fi';
 import {useSelector, useDispatch} from 'react-redux';
 import {log_out} from '../redux/reducer/user/actions';
-import io from 'socket.io-client';
-
-export const socket = io.connect('http://localhost:5000');
 
 export default function Header() {
     const dispatch = useDispatch();

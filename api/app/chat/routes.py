@@ -6,6 +6,20 @@ from app.auth.routes import token_required
 from app.auth.models import User, UserToken
 import datetime
 
+
+@bp.route('/room', methods=['GET'])
+@token_required
+def get_all_room(current_user):
+    known_rooms = []
+    unknown_rooms = []
+    for room in current_user.known_rooms:
+        known_rooms.append({'room_id': room.id, 'user': room.unknown_user.get_dict()})
+    for room in current_user.unknown_rooms:
+        unknown_rooms.append({'room_id': room.id, 'user': {'name': hash(room.known_user.name)}})
+
+    return jsonify({'known_rooms': known_rooms, 'unknown_rooms': unknown_rooms})
+
+
 @bp.route('/room', methods=['POST'])
 @token_required
 def get_room(current_user):

@@ -6,7 +6,9 @@ import {FiMessageSquare} from 'react-icons/fi';
 import {useHistory} from 'react-router-dom';
 import {useSelector} from 'react-redux';
 import defaultAvatar from '../images/avatar.png';
-import {socket} from './Header';
+import io from 'socket.io-client';
+
+const socket = io.connect('http://localhost:5000');
 
 export default function(props) {
     const {room_id} = useParams();
@@ -133,20 +135,20 @@ const SendMessage = (props) => {
             }
             setMessage('');
         };
-        return (
-        <div className='typing'>
-            <form onSubmit={(e) => handleSubmit(e)}>
-                <input
-                    type='text'
-                    placeholder='Message...'
-                    value={message}
-                    onChange={(e) => handleChange(e)}
-                />
-                <button type="submit">
-                    <FiSend size={25}/>
-                </button>
-            </form>
-        </div>
+	return (
+	<div className='typing'>
+	    <form onSubmit={(e) => handleSubmit(e)}>
+		<input
+		    type='text'
+		    placeholder='Message...'
+		    value={message}
+		    onChange={(e) => handleChange(e)}
+		/>
+		<button type="submit">
+		    <FiSend size={25}/>
+		</button>
+	    </form>
+	</div>
     );
 }
 

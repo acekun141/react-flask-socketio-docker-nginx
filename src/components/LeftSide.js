@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {FiUserCheck, FiUserX} from 'react-icons/fi';
 import {Avatar} from '../pages/HomePage';
-import {socket} from './Header';
 import defaultAvatar from '../images/avatar.png';
 import {useHistory} from 'react-router-dom';
 import {useParams} from 'react-router-dom';
-import {get_room} from '../actions/directPage';
-
+import {get_room, get_all_room} from '../actions/directPage';
 
 export default function(props) {
     const [knownRooms, setKnownRooms] = useState([]);
@@ -15,18 +13,14 @@ export default function(props) {
     const {room_id} = useParams();
     const history = useHistory();
     useEffect(() => {
-        socket.emit('get', {'token': localStorage.getItem('token')})
-        socket.on('handle_room', data => {
-            if (data.known_rooms && data.unknown_rooms) {
+        const async_function = async () => {
+            const data = await get_all_room();
+            if (data) {
                 setKnownRooms([...data.known_rooms]);
                 setUnknownRooms([...data.unknown_rooms]);
-            } else {
-                alert('Something wrong! Try later');
             }
-        });
-        return () => {
-            socket.off('handle_room');
-        } 
+        };
+        async_function();
     }, []);
     useEffect(() => {
         const async_function = async () => {
