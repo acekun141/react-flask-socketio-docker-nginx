@@ -28,7 +28,7 @@ export default function(props) {
             });
             const data = await response.json();
             if (data.messages) {
-                setMessages([...messages, ...data.messages]);
+                setMessages([...data.messages]);
                 if (data.next) {
                     setNext(data.next);
                 } else {
@@ -119,6 +119,9 @@ const MessageBox = (props) => {
             if (msgs) {
                 setTimeout(() => {msgs.scrollTop = msgs.scrollHeight}, 1);
             }
+        }
+        return () => {
+            setMessages([]);
         }
     }, [props.messages, msgs])
     return (
