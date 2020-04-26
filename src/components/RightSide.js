@@ -28,7 +28,7 @@ export default function(props) {
             });
             const data = await response.json();
             if (data.messages) {
-                setMessages([...data.messages]);
+                setMessages([...messages, ...data.messages]);
                 if (data.next) {
                     setNext(data.next);
                 } else {
@@ -41,14 +41,15 @@ export default function(props) {
             history.replace('/direct');
         }
     };
-    const get_next_message = () => {
-        get_message(room_id, next);
-    }
     useEffect(() => {
         if (room_id) {
             get_message(room_id, 1);
+            socket.emit('join', {room_id, token: localStorage.getItem('token')});
         } else {
             setMessages([]);
+        }
+        return () => {
+            socket.emit('leave', {room_id, token: localStorage.getItem('token')});
         }
     }, [room_id]);
     return (
@@ -56,7 +57,7 @@ export default function(props) {
         ? 
         <div className='right-side show'>
             <RoomInfo roomInfo={props.roomInfo}/>
-            <MessageBox messages={messages} room_id={room_id} />
+            <MessageBox messages={messages} room_id={room_id} next={next} setNext={setNext}/>
         </div>
         :
         <div className='right-side none-direct'>
@@ -71,18 +72,42 @@ const MessageBox = (props) => {
     const [messages, setMessages] = useState([]);
     const user = useSelector(state => state.user);
     const msgs = document.getElementById('messages');
+    const get_next_message = async (room_id, next) => {
+        try {
+            const response = await fetch('/chat/message', {
+                method: 'GET',
+                headers: {
+                    'x-access-token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                    'room_id': props.room_id,
+                    'page': props.next
+                },
+            });
+            const data = await response.json();
+            if (data.messages) {
+                setMessages([...messages, ...data.messages]);
+                if (data.next) {
+                    props.setNext(data.next);
+                } else {
+                    props.setNext(false);
+                }
+            } else {
+                throw(new Error('error'));
+            }
+        } catch(error) {
+            alert('Something Wrong! Try later')
+        }
+    };
     useEffect(() => {
         socket.on('send_message', (data) => {
-            let date = new Date(data.date);
-            setMessages([...messages, {
-                user_id: data.user_id,
-                message: data.message,
-                id: data.id,
-                date: `${date.getUTCHours()}:${date.getUTCMinutes()}`
-            }]);
+            setMessages([...messages, data]);
         });
         if (msgs) {
-            setTimeout(() => {msgs.scrollTop = msgs.scrollHeight}, 1);
+            setTimeout(() => {
+                if (!(msgs.scrollTop === 0)) {
+                    msgs.scrollTop = msgs.scrollHeight
+                }
+            }, 1);
         }
         return () => {
             socket.off('send_mesasge');
@@ -90,14 +115,7 @@ const MessageBox = (props) => {
     }, [messages, msgs])
     useEffect(() => {
         if (props.messages) {
-            setMessages(props.messages.map(message => {
-                const date = new Date(message.date);
-                return {user_id: message.user_id,
-                        message: message.message,
-                        id: message.id,
-                        date: `${date.getUTCHours()}:${date.getUTCMinutes()}`
-                    }
-            }));
+            setMessages([...props.messages]);
             if (msgs) {
                 setTimeout(() => {msgs.scrollTop = msgs.scrollHeight}, 1);
             }
@@ -106,11 +124,19 @@ const MessageBox = (props) => {
     return (
         <div className='side-content'>
             <div className='messages' id='messages'>
+                {props.next
+                    ? <button className='older-messages'
+                              onClick={() => get_next_message()}>Older</button>
+                    : null
+                }
                 {messages.sort((a, b) => a.id - b.id).map(message => {
+                    const date = new Date(message.date);
+                    const hour = date.getUTCHours() < 10 ? `0${date.getUTCHours()}` : date.getUTCHours();
+                    const minus = date.getUTCMinutes() < 10 ? `0${date.getUTCMinutes()}` : date.getUTCMinutes();
                     return (
                         <div key={message.id} className={`wrap-message ${user.userID === message.user_id ? 'your-message' : ''}`}>
                             <p className='message'>{message.message}</p>
-                            <p className='time'>{message.date}</p>
+                            <p className='time'>{`${hour}:${minus}`}</p>
                         </div>
                     )
                 })}
@@ -129,7 +155,10 @@ const SendMessage = (props) => {
         event.preventDefault();
         if (message)
             try {
-                socket.emit('receive_message', {room_id: props.room_id, message: message, token: localStorage.getItem('token')});
+                socket.emit('receive_message',
+                            {room_id: props.room_id,
+                             message: message,
+                             token: localStorage.getItem('token')});
             } catch(error) {
                 alert('Something Wrong! Try later');
             }

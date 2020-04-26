@@ -18,11 +18,23 @@ def check_token(data):
     else:
         return False
 
+
 @socketio.on('join')
-def join_romo(data):
+def join(data):
     current_user = check_token(data)
-    if current_user:
-        pass
+    room_id = data.get('room_id', None)
+    if current_user and room_id:
+        print(room_id)
+        join_room(room_id)
+
+
+@socketio.on('leave')
+def leave(data):
+    current_user = check_token(data)
+    room_id = data.get('room_id', None)
+    if current_user and room_id:
+        print(room_id)
+        leave_room(room_id)
 
     
 @socketio.on('receive_message')
@@ -42,4 +54,4 @@ def receive_message(data):
                 emit('send_message', {'message': new_message.message,
                                       'user_id': current_user.user_id,
                                       'date': new_message.date.strftime("%a, %d %b %Y %H:%M:%S GMT"),
-                                      'id': new_message.id})
+                                      'id': new_message.id}, room=room_id)

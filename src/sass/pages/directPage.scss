@@ -152,6 +152,13 @@
                 left: 0;
                 overflow-x: auto;
                 box-sizing: border-box;
+                .older-messages {
+                    text-align: center;
+                    font-weight: bold;
+                    color: #1a73e8;
+                    margin: 0 auto;
+                    display: block;
+                }
                 .wrap-message {
                     display: flex;
                     align-items: center;

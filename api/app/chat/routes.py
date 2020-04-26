@@ -61,25 +61,6 @@ def get_room_detail(current_user, room_id):
     except:
         return jsonify({'error': 'Invalid'}), 401
 
-# @bp.route('/message', methods=['POST'])
-# @token_required
-# def send_message(current_user):
-#     data = request.get_json()
-#     message = data.get('message')
-#     room_id = data.get('room_id')
-#     if message and user_id:
-#         user = User.query.filter_by(user_id=user_id).first()
-#         room = (Room.query.filter_by(
-#                     id=room_id, user_id=current_user.user_id).first()
-#                 or Room.query.filter_by(
-#                     id=room_id, user_id=user_id,
-#                     private_user=current_user.user_id)
-#                 )
-#         if user and room:
-#             Message.create_new(current_user, user, room, message)
-#             return jsonify({'message': message, 'user_id': current_user.user_id})
-#     return jsonify({'error': 'Invalid'}), 401
-
 
 @bp.route('/message', methods=['GET'])
 @token_required
