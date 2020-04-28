@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {FiSend, FiChevronLeft} from 'react-icons/fi'
 import {Avatar} from '../pages/HomePage';
 import {useParams, Link} from 'react-router-dom';
@@ -70,9 +70,10 @@ export default function(props) {
 
 const MessageBox = (props) => {
     const [messages, setMessages] = useState([]);
+    const [len, setLen] = useState(0);
     const user = useSelector(state => state.user);
-    const msgs = document.getElementById('messages');
-    const get_next_message = async (room_id, next) => {
+    const get_next_message = async () => {
+        console.log(len);
         try {
             const response = await fetch('/chat/message', {
                 method: 'GET',
@@ -80,12 +81,13 @@ const MessageBox = (props) => {
                     'x-access-token': localStorage.getItem('token'),
                     'Content-Type': 'application/json',
                     'room_id': props.room_id,
-                    'page': props.next
+                    'page': props.next,
+                    'len_new': len
                 },
             });
             const data = await response.json();
             if (data.messages) {
-                setMessages([...messages, ...data.messages]);
+                setMessages(oldMessages => [...oldMessages, ...data.messages]);
                 if (data.next) {
                     props.setNext(data.next);
                 } else {
@@ -100,30 +102,35 @@ const MessageBox = (props) => {
     };
     useEffect(() => {
         socket.on('send_message', (data) => {
-            setMessages([...messages, data]);
+            setMessages(oldMessages => [...oldMessages, data]);
+            setLen(oldLen => oldLen + 1);
         });
-        if (msgs) {
-            setTimeout(() => {
-                if (!(msgs.scrollTop === 0)) {
-                    msgs.scrollTop = msgs.scrollHeight
-                }
-            }, 1);
-        }
         return () => {
             socket.off('send_mesasge');
         }
-    }, [messages, msgs])
+    }, [])
     useEffect(() => {
         if (props.messages) {
             setMessages([...props.messages]);
-            if (msgs) {
-                setTimeout(() => {msgs.scrollTop = msgs.scrollHeight}, 1);
-            }
         }
         return () => {
             setMessages([]);
         }
-    }, [props.messages, msgs])
+    }, [props.messages]);
+    useEffect(() => {
+        const msgs = document.getElementById('messages');
+        if (msgs) {
+            if (props.next === 2) {
+                msgs.scrollTop = msgs.scrollHeight
+            }
+            if (msgs.scrollTop !== 0) {
+                msgs.scrollTop = msgs.scrollHeight
+            }
+        }
+    }, [messages, props.next])
+    useEffect(() => {
+        console.log(len);
+    }, [len])
     return (
         <div className='side-content'>
             <div className='messages' id='messages'>

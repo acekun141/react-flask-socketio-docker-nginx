@@ -67,23 +67,20 @@ def get_room_detail(current_user, room_id):
 def get_messages(current_user):
     room_id = request.headers.get('room_id')
     page = request.headers.get('page')
+    len_new = request.headers.get('len_new')
     if room_id:
         room = (Room.query.filter_by(user_id=current_user.user_id,id=room_id).first()
                 or Room.query.filter_by(private_user=current_user.user_id,id=room_id).first())
         if room:
             try: 
                 messages = Message.query.filter_by(room=room).order_by(
-                    sqlalchemy.desc(Message.date)).paginate(page=int(page), per_page=10)
+                    sqlalchemy.desc(Message.date)).paginate(page=int(page), per_page=10+int(len_new))
             except Exception as value:
                 messages = Message.query.filter_by(room=room).order_by(
                     sqlalchemy.desc(Message.date)).paginate(page=1, per_page=10)
-                result = []
-                for message in messages.items:
-                    result.append(message.get_dict())
-                return jsonify({'messages': result})
             if messages.has_next:
                 result = []
-                for message in messages.items:
+                for message in messages.items[:10]:
                     result.append(message.get_dict())
                 return jsonify({'messages': result, 'next': int(page)+1})
             else:
