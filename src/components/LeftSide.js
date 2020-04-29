@@ -113,7 +113,19 @@ export default function(props) {
 const UnknownRooms = (props) => {
     return (
         <div className='wrap-list-friend'>
-            {props.data.map(room_data => (
+            {props.data
+            .sort((a, b) => {
+                const aDate = new Date(a.date);
+                const bDate = new Date(b.date);
+                if (aDate > bDate) {
+                    return 1;
+                } else if (aDate < bDate) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            })
+            .map(room_data => (
                 <button key={room_data.room_id} className={`friend ${room_data.seen}`}
                         onClick={() => props.enter(room_data)}
                 >
@@ -132,7 +144,19 @@ const UnknownRooms = (props) => {
 const KnownRooms = (props) => {
     return (
         <div className='wrap-list-friend'>
-            {props.data.map(room_data => (
+            {props.data
+            .sort((a, b) => {
+                const aDate = new Date(a.date);
+                const bDate = new Date(b.date);
+                if (aDate > bDate) {
+                    return 1;
+                } else if (aDate < bDate) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            })
+            .map(room_data => (
                 <button key={room_data.room_id} className={`friend ${room_data.seen}`}
                         onClick={() => props.enter(room_data)}
                 >
