@@ -21,10 +21,10 @@ def check_token(data):
 
 @socketio.on('join')
 def join(data):
+    print(data)
     current_user = check_token(data)
     room_id = data.get('room_id', None)
     if current_user and room_id:
-        print(room_id)
         join_room(room_id)
 
 
@@ -33,7 +33,6 @@ def leave(data):
     current_user = check_token(data)
     room_id = data.get('room_id', None)
     if current_user and room_id:
-        print(room_id)
         leave_room(room_id)
 
     
@@ -51,6 +50,32 @@ def receive_message(data):
                     )
             if room:
                 new_message = Message.create_new(current_user, room, message)
+                room.date = new_message.date
+                room.user_seen = False
+                room.private_seen = False
+                db.session.commit()
+                if room.user_id == current_user.user_id:
+                    emit('take_new',
+                         {'room_id': room.id,
+                          'user': room.unknown_user.get_dict(),
+                          'seen': True,
+                          'date': room.date.strftime("%a, %d %b %Y %H:%M:%S GMT")}, room=room.known_user.user_id)
+                    emit('take_new',
+                         {'room_id': room.id,
+                          'user': {'name': hash(room.known_user.name)},
+                          'seen': False,
+                          'date': room.date.strftime("%a, %d %b %Y %H:%M:%S GMT")}, room=room.unknown_user.user_id)
+                else:
+                    emit('take_new',
+                         {'room_id': room.id,
+                          'user': {'name': hash(room.known_user.name)},
+                          'seen': True,
+                          'date': room.date.strftime("%a, %d %b %Y %H:%M:%S GMT")}, room=room.unknown_user.user_id)
+                    emit('take_new',
+                         {'room_id': room.id,
+                          'user': room.unknown_user.get_dict(),
+                          'seen': False,
+                          'date': room.date.strftime("%a, %d %b %Y %H:%M:%S GMT")}, room=room.known_user.user_id)
                 emit('send_message', {'message': new_message.message,
                                       'user_id': current_user.user_id,
                                       'date': new_message.date.strftime("%a, %d %b %Y %H:%M:%S GMT"),

@@ -4,13 +4,18 @@ import {Avatar} from '../pages/HomePage';
 import defaultAvatar from '../images/avatar.png';
 import {useHistory} from 'react-router-dom';
 import {useParams} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 import {get_room, get_all_room} from '../actions/directPage';
+import io from 'socket.io-client';
+
+const socket = io.connect('http://localhost:5000');
 
 export default function(props) {
     const [knownRooms, setKnownRooms] = useState([]);
     const [unknownRooms, setUnknownRooms] = useState([]);
     const [show, setShow] = useState(1);
     const {room_id} = useParams();
+    const user = useSelector(state => state.user);
     const history = useHistory();
     useEffect(() => {
         const async_function = async () => {
@@ -21,7 +26,33 @@ export default function(props) {
             }
         };
         async_function();
-    }, []);
+        socket.emit('join', {room_id: user.userID, token: localStorage.getItem('token')})
+        socket.on('take_new', (room_data) => {
+            console.log(room_data);
+            setKnownRooms(oldKnownRooms => {
+                return oldKnownRooms.map(known_data => {
+                    if (known_data.room_id === room_data.room_id) {
+                        return room_data;
+                    } else {
+                        return known_data;
+                    }
+                });
+            })    
+            setUnknownRooms(oldUnknownRooms => {
+                return oldUnknownRooms.map(unknown_data => {
+                    if (unknown_data.room_id === room_data.room_id) {
+                        return room_data;
+                    } else {
+                        return unknown_data;
+                    }
+                });
+            })    
+        })
+        return () => {
+            socket.off('take_new');
+            socket.emit('leave', {room_id: user.userID, token: localStorage.getItem('token')});
+        }
+    }, [user]);
     useEffect(() => {
         const async_function = async () => {
             const data = await get_room(room_id);
@@ -48,7 +79,6 @@ export default function(props) {
         unknown.classList.add('active');
     };
     const enterRoom = (room_data) => {
-        console.log(room_data);
         props.setRoomInfo(room_data);
         history.push(`/direct/${room_data.room_id}`);
     }
@@ -84,7 +114,7 @@ const UnknownRooms = (props) => {
     return (
         <div className='wrap-list-friend'>
             {props.data.map(room_data => (
-                <button key={room_data.room_id} className='friend'
+                <button key={room_data.room_id} className={`friend ${room_data.seen}`}
                         onClick={() => props.enter(room_data)}
                 >
                     <div className='friend-left'>
@@ -103,7 +133,7 @@ const KnownRooms = (props) => {
     return (
         <div className='wrap-list-friend'>
             {props.data.map(room_data => (
-                <button key={room_data.room_id} className='friend'
+                <button key={room_data.room_id} className={`friend ${room_data.seen}`}
                         onClick={() => props.enter(room_data)}
                 >
                     <div className='friend-left'>

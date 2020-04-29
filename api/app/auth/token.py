@@ -12,7 +12,6 @@ def get_jwt(data):
 
 def check_token(access_token, name, user_id):
     url = "https://graph.facebook.com/v6.0/me?fields=id%2Cname&access_token={}".format(access_token)
-    print(url)
     response = requests.get(url)
     data = response.json()
     if "id" in data and "name" in data:

@@ -1,14 +1,17 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {FiSend, FiChevronLeft} from 'react-icons/fi'
 import {Avatar} from '../pages/HomePage';
 import {useParams, Link} from 'react-router-dom';
 import {FiMessageSquare} from 'react-icons/fi';
 import {useHistory} from 'react-router-dom';
 import {useSelector} from 'react-redux';
+import {seen_room} from '../actions/directPage';
+import soundEffect from '../sounds/message_sound.mp3';
 import defaultAvatar from '../images/avatar.png';
 import io from 'socket.io-client';
 
 const socket = io.connect('http://localhost:5000');
+const soundEff = new Audio(soundEffect);
 
 export default function(props) {
     const {room_id} = useParams();
@@ -44,6 +47,7 @@ export default function(props) {
     useEffect(() => {
         if (room_id) {
             get_message(room_id, 1);
+            seen_room(room_id);
             socket.emit('join', {room_id, token: localStorage.getItem('token')});
         } else {
             setMessages([]);
@@ -100,15 +104,25 @@ const MessageBox = (props) => {
             alert('Something Wrong! Try later')
         }
     };
+    const seen = useCallback(
+        () => {
+            seen_room(props.room_id);
+        },
+        [props.room_id],
+    )
     useEffect(() => {
         socket.on('send_message', (data) => {
             setMessages(oldMessages => [...oldMessages, data]);
             setLen(oldLen => oldLen + 1);
+            if (data.user_id !== user.userID) {
+                soundEff.play();
+            }
+            seen();
         });
         return () => {
             socket.off('send_mesasge');
         }
-    }, [])
+    }, [seen]);
     useEffect(() => {
         if (props.messages) {
             setMessages([...props.messages]);
@@ -121,10 +135,10 @@ const MessageBox = (props) => {
         const msgs = document.getElementById('messages');
         if (msgs) {
             if (props.next === 2) {
-                msgs.scrollTop = msgs.scrollHeight
+                msgs.scrollTop = msgs.scrollHeight;
             }
             if (msgs.scrollTop !== 0) {
-                msgs.scrollTop = msgs.scrollHeight
+                msgs.scrollTop = msgs.scrollHeight;
             }
         }
     }, [messages, props.next])

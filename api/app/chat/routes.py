@@ -1,3 +1,4 @@
+from app import db
 from flask import request, jsonify
 from flask_sqlalchemy import sqlalchemy
 from app.chat import chat as bp
@@ -13,11 +14,28 @@ def get_all_room(current_user):
     known_rooms = []
     unknown_rooms = []
     for room in current_user.known_rooms:
-        known_rooms.append({'room_id': room.id, 'user': room.unknown_user.get_dict()})
+        known_rooms.append({'room_id': room.id, 'user': room.unknown_user.get_dict(), 'seen': room.user_seen, 'date': room.date})
     for room in current_user.unknown_rooms:
-        unknown_rooms.append({'room_id': room.id, 'user': {'name': hash(room.known_user.name)}})
+        unknown_rooms.append({'room_id': room.id, 'user': {'name': hash(room.known_user.name)}, 'seen': room.private_seen, 'date': room.date})
 
     return jsonify({'known_rooms': known_rooms, 'unknown_rooms': unknown_rooms})
+
+
+@bp.route('/room/seen', methods=['POST'])
+@token_required
+def seen_room(current_user):
+    data = request.get_json()
+    room_id = data.get('room_id', None)
+    if room_id:
+        room = Room.query.filter_by(id=room_id).first()
+        if room:
+            if room.user_id == current_user.user_id:
+                room.user_seen = True
+            elif room.private_user == current_user.user_id:
+                room.private_seen = True
+            db.session.commit()
+            return jsonify({'message': 'ok'})
+    return jsonify({'error': 'Invalid'}), 401
 
 
 @bp.route('/room', methods=['POST'])

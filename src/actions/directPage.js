@@ -42,4 +42,25 @@ export const get_all_room = async () => {
         alert('Cannot login! Try later');
         return false;
     }
+};
+
+export const seen_room = async (room_id) => {
+    try {
+        const response = await fetch('/chat/room/seen', {
+            method: 'POST',
+            headers: {
+                'x-access-token': localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({room_id})
+        })
+        const data = await response.json();
+        if (data.error) {
+            throw(new Error('error'));
+        } else {
+            return data;
+        }
+    } catch(error) {
+        console.log('can seen room');
+    }
 }
