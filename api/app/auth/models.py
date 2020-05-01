@@ -1,4 +1,5 @@
 from app import db
+from flask_sqlalchemy import sqlalchemy
 from app.auth.token import get_token, get_jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
@@ -24,7 +25,7 @@ class AdminUser(db.Model):
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, unique=True, nullable=False)
+    user_id = db.Column(sqlalchemy.BIGINT, unique=True, nullable=False)
     name = db.Column(db.String(120), nullable=False, index=True)
     email = db.Column(db.Text)
     avatar = db.Column(db.Text, nullable=False)
@@ -54,7 +55,7 @@ class User(db.Model):
 class UserToken(db.Model):
     __tablename__ = 'user_tokens'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    user_id = db.Column(sqlalchemy.BIGINT, db.ForeignKey('users.user_id'))
     access_token = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime)
 

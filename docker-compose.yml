@@ -1,0 +1,22 @@
+version: "3.3"
+services:
+  api:
+    container_name: flask_api
+    build: ./api
+    environment:
+      - SECRET_KEY="chiukhongbietlagi"
+    links:
+      - db
+    depends_on:
+      - db
+    ports:
+      - 5000:5000
+    environment:
+      - DATABASE_URL=postgresql://production:doembietanhdangnghigi@db:5432/db_production
+  db:
+    container_name: postgres_db
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_USER=production
+      - POSTGRES_PASSWORD=doembietanhdangnghigi
+      - POSTGRES_DB=db_production

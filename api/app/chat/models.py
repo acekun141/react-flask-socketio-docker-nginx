@@ -1,13 +1,14 @@
 from app import db
 from app.auth.models import User
+from flask_sqlalchemy import sqlalchemy
 import datetime
 
 
 class Room(db.Model):
     __tablename__ = 'rooms'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    private_user = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    user_id = db.Column(sqlalchemy.BIGINT, db.ForeignKey('users.user_id'))
+    private_user = db.Column(sqlalchemy.BIGINT, db.ForeignKey('users.user_id'))
     user_seen = db.Column(db.Boolean)
     private_seen = db.Column(db.Boolean)
     date = db.Column(db.DateTime)
@@ -39,9 +40,9 @@ class Room(db.Model):
 class Message(db.Model):
     __tablename__ = 'messages'
     id = db.Column(db.Integer, primary_key=True)
-    room_id = db.Column(db.Integer, db.ForeignKey('rooms.user_id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    to_user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
+    user_id = db.Column(sqlalchemy.BIGINT, db.ForeignKey('users.user_id'))
+    to_user_id = db.Column(sqlalchemy.BIGINT, db.ForeignKey('users.user_id'))
     message = db.Column(db.String(500))
     date = db.Column(db.DateTime)
 
