@@ -1,3 +1,5 @@
+import eventlet
+eventlet.monkey_patch()
 from flask import current_app, jsonify
 import requests
 import jwt

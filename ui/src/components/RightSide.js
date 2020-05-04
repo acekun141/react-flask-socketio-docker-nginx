@@ -104,12 +104,6 @@ const MessageBox = (props) => {
             alert('Something Wrong! Try later')
         }
     };
-    const seen = useCallback(
-        () => {
-            seen_room(props.room_id);
-        },
-        [props.room_id],
-    )
     useEffect(() => {
         socket.on('send_message', (data) => {
             setMessages(oldMessages => [...oldMessages, data]);
@@ -117,12 +111,12 @@ const MessageBox = (props) => {
             if (data.user_id !== user.userID) {
                 soundEff.play();
             }
-            seen();
+            seen_room(props.room_id);
         });
         return () => {
             socket.off('send_mesasge');
         }
-    }, [seen]);
+    }, []);
     useEffect(() => {
         if (props.messages) {
             setMessages([...props.messages]);
@@ -187,7 +181,7 @@ const SendMessage = (props) => {
                 alert('Something Wrong! Try later');
             }
             setMessage('');
-        };
+    };
 	return (
 	<div className='typing'>
 	    <form onSubmit={(e) => handleSubmit(e)}>

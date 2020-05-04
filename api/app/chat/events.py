@@ -21,7 +21,6 @@ def check_token(data):
 
 @socketio.on('join')
 def join(data):
-    print(data)
     current_user = check_token(data)
     room_id = data.get('room_id', None)
     if current_user and room_id:

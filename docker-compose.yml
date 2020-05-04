@@ -3,20 +3,33 @@ services:
   api:
     container_name: flask_api
     build: ./api
-    environment:
-      - SECRET_KEY="chiukhongbietlagi"
     links:
       - db
     depends_on:
       - db
     ports:
       - 5000:5000
-    environment:
-      - DATABASE_URL=postgresql://production:doembietanhdangnghigi@db:5432/db_production
+    env_file: .env.api
+    restart: always
   db:
     container_name: postgres_db
     image: postgres:12-alpine
-    environment:
-      - POSTGRES_USER=production
-      - POSTGRES_PASSWORD=doembietanhdangnghigi
-      - POSTGRES_DB=db_production
+    env_file: .env.postgres
+    restart: always
+  react:
+    container_name: react_ui
+    build: ./ui
+  nginx:
+    container_name: nginx_server
+    image: nginx:latest
+    depends_on:
+      - api
+      - react
+    links:
+      - api
+      - react
+    volumes:
+      - ./nginx:/etc/nginx/conf.d/
+    restart: always
+    ports:
+      - 80:80

@@ -6,8 +6,6 @@ ADD app /code/app/
 
 WORKDIR /code
 
-ENV SECRET_KEY "khongbietgidaudungcohoi"
-
 RUN pip install -r requirements.txt
 
 RUN chmod u+x ./start.sh
