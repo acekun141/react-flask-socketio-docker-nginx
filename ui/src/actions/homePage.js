@@ -32,7 +32,7 @@ export const get_next_friend = async (url) => {
 
 export const get_room = async (user_id) => {
     try {
-        const response = await fetch('/chat/room',
+        const response = await fetch('https://whochattingapi.herokuapp.com/chat/room',
             {
                 method: 'POST',
                 cache: 'no-cache',

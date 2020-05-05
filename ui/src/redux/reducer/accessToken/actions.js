@@ -3,7 +3,7 @@ import {LOGOUT} from '../user/actionTypes';
 
 export const get_token = () => async (dispatch) => {
     try {
-        const response = await fetch('/auth/token',
+        const response = await fetch('https://whochattingapi.herokuapp.com/auth/token',
             {
                 method: 'GET',
                 headers: {

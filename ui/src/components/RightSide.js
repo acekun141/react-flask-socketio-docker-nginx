@@ -10,7 +10,7 @@ import soundEffect from '../sounds/message_sound.mp3';
 import defaultAvatar from '../images/avatar.png';
 import io from 'socket.io-client';
 
-const socket = io.connect('http://localhost:5000');
+const socket = io.connect('https://whochattingapi.herokuapp.com');
 const soundEff = new Audio(soundEffect);
 
 export default function(props) {
@@ -20,7 +20,7 @@ export default function(props) {
     const history = useHistory();
     const get_message = async (room_id, next) => {
         try {
-            const response = await fetch('/chat/message', {
+            const response = await fetch('https://whochattingapi.herokuapp.com/chat/message', {
                 method: 'GET',
                 headers: {
                     'x-access-token': localStorage.getItem('token'),
@@ -79,7 +79,7 @@ const MessageBox = (props) => {
     const get_next_message = async () => {
         console.log(len);
         try {
-            const response = await fetch('/chat/message', {
+            const response = await fetch('https://whochattingapi.herokuapp.com/chat/message', {
                 method: 'GET',
                 headers: {
                     'x-access-token': localStorage.getItem('token'),

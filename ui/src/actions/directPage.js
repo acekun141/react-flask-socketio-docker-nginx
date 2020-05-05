@@ -1,6 +1,6 @@
 export const get_room = async (room_id) => {
     try {
-        const response = await fetch(`/chat/room/${room_id}`,
+        const response = await fetch(`https://whochattingapi.herokuapp.com/chat/room/${room_id}`,
             {
                 method: 'GET',
                 cache: 'no-cache',
@@ -23,7 +23,7 @@ export const get_room = async (room_id) => {
 
 export const get_all_room = async () => {
     try {
-        const response = await fetch('/chat/room',
+        const response = await fetch('https://whochattingapi.herokuapp.com/chat/room',
             {
                 method: 'GET',
                 cache: 'no-cache',
@@ -46,7 +46,7 @@ export const get_all_room = async () => {
 
 export const seen_room = async (room_id) => {
     try {
-        const response = await fetch('/chat/room/seen', {
+        const response = await fetch('https://whochattingapi.herokuapp.com/chat/room/seen', {
             method: 'POST',
             headers: {
                 'x-access-token': localStorage.getItem('token'),

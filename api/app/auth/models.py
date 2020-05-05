@@ -86,8 +86,8 @@ class UserToken(db.Model):
 class Favorite(db.Model):
     __tablename__ = 'favorites'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    favorite = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    user_id = db.Column(sqlalchemy.BIGINT, db.ForeignKey('users.user_id'))
+    favorite = db.Column(sqlalchemy.BIGINT, db.ForeignKey('users.user_id'))
 
     def _repr__(self):
         return '<Favorite {}>'.format(self.user.name)

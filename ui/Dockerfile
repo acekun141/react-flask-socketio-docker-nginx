@@ -19,10 +19,11 @@ RUN npm install react-script --silent
 
 RUN npm install -g serve --silent
 
-# Build the project and copy the files
 RUN npm run build
 
-CMD serve -s build -l 3000
+EXPOSE $PORT
+
+CMD serve -s build -l tcp://0.0.0.0:$PORT
 
 
 # FROM nginx:alpine

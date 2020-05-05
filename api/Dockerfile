@@ -10,4 +10,8 @@ RUN pip install -r requirements.txt
 
 RUN chmod u+x ./start.sh
 
-CMD ./start.sh
+ENV SECRET_KEY=alsdfjlasdkjfoiwjfewfjasdlfjasdasdlfjasdlkfjiowefjwojfwiojfawjfalksdjfalskdjf
+
+EXPOSE $POST
+
+CMD flask db init && flask db migrate && flask db upgrade && gunicorn --worker-class eventlet -w 1 main:app --bind 0.0.0.0:$PORT --reload

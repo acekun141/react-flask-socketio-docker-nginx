@@ -2,16 +2,16 @@ import {SIGN, GET_USER, LOGOUT} from './actionTypes';
 
 export const sign = (data) => async (dispatch) => {
     try {
-        const response = await fetch('/auth/sign',
-            {
-                method: 'POST',
-                cache: 'no-cache',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }
-        );
+        const response = await fetch('https://whochattingapi.herokuapp.com/auth/sign',
+	{
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		},
+		credentials: 'same-origin',
+		body: JSON.stringify(data)
+	}); 
         if (response.status !== 200) {
             throw('Error');
         } else {

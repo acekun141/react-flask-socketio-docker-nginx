@@ -8,7 +8,7 @@ import {useSelector} from 'react-redux';
 import {get_room, get_all_room} from '../actions/directPage';
 import io from 'socket.io-client';
 
-const socket = io.connect('http://localhost:5000');
+const socket = io.connect('https://whochattingapi.herokuapp.com');
 
 export default function(props) {
     const [knownRooms, setKnownRooms] = useState([]);
