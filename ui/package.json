@@ -9,7 +9,7 @@
     "axios": "^0.19.2",
     "http-proxy-middleware": "^1.0.3",
     "js-base64": "^2.5.2",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-facebook-login": "^4.1.1",
